@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 from src.conversion.SpeechToText import audioSource
 
