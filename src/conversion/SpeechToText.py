@@ -65,5 +65,3 @@ def audioConversion(txtFileName, data, recognizer):
 def outputToFile(txtFileName="", audioText =""):
     with open(txtFileName, "a") as f:
         f.write(audioText + "\n")
-
-
