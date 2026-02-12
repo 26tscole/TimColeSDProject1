@@ -3,6 +3,7 @@ from src.conversion.SpeechToText import audioSource
 
 project_root = Path(__file__).parent
 
+
 # tests if audio is being converted and saved to a file correctly
 def test_audio_conversion():
     audioFilePath = str(project_root) + "/TestingFiles/testAudio.wav"

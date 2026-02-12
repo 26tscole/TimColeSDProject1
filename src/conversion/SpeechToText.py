@@ -6,6 +6,7 @@ import json
 
 modelPath = "vosk-model-small-en-us-0.15"
 
+
 # checks audio source and then calls audioConversion to turn it into text
 # i kind of hate this name
 def audioSource(audioFilePath = "", source="microphone", txtFileName="DefaultText.txt"):
@@ -15,8 +16,8 @@ def audioSource(audioFilePath = "", source="microphone", txtFileName="DefaultTex
     with open(txtFileName, 'w') as f:
         f.write("")
     project_root = Path(__file__).parent.parent.parent
-    audioFilePath = str(project_root / audioFilePath)
-    newModelPath = str(project_root / modelPath)
+    audioFilePath = str(project_root/audioFilePath)
+    newModelPath = str(project_root/modelPath)
     model = Model(newModelPath)
     recognizer = None
 
@@ -28,7 +29,7 @@ def audioSource(audioFilePath = "", source="microphone", txtFileName="DefaultTex
         recognizer = KaldiRecognizer(model, 16000)
         while True:
             data = stream.read(4000)
-            if audioConversion(txtFileName=txtFileName, data=data, recognizer=recognizer): break
+            if audioConversion(txtFileName=txtFileName, data=data, recognizer=recognizer):break
 
     # this is where the audio file should go through
     elif source == "file":
@@ -39,14 +40,15 @@ def audioSource(audioFilePath = "", source="microphone", txtFileName="DefaultTex
             recognizer = KaldiRecognizer(model, wf.getframerate())
             while True:
                 data = wf.readframes(4000)
-                if audioConversion(txtFileName = txtFileName, data=data, recognizer=recognizer): break
+                if audioConversion(txtFileName = txtFileName, data=data, recognizer=recognizer):break
 
     # the last result works very strange so I had to add this to actually output it
     final_result = json.loads(recognizer.FinalResult())
     final_text = final_result.get("text", "")
     if final_text:
-        outputToFile(txtFileName = txtFileName,audioText = final_text)
+        outputToFile(txtFileName = txtFileName, audioText = final_text)
         print(final_text)
+
 
 # this will return true or false depending on whether the recording should end or not
 def audioConversion(txtFileName, data, recognizer):
@@ -56,10 +58,11 @@ def audioConversion(txtFileName, data, recognizer):
         result = json.loads(recognizer.Result())
         print(result["text"])
         if result:
-            outputToFile(txtFileName = txtFileName,audioText = result["text"])
+            outputToFile(txtFileName = txtFileName, audioText = result["text"])
             if result["text"] == "stop recording" :
                 return True
     return False
+
 
 # sends text to a file or creates a file
 def outputToFile(txtFileName="", audioText =""):
