@@ -1,4 +1,4 @@
-from conversion.SpeechToText import audioSource
+from SpeechToText import audioSource
 
 if __name__ == "__main__":
     # for choosing file names i dont think its a good idea to have spaces so i took away the option

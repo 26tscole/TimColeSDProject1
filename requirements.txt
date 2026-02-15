@@ -1,3 +1,4 @@
 vosk==0.3.44
 pytest==8.3.4
 pyaudio
+requests
