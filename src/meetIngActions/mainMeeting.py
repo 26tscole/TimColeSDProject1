@@ -1,6 +1,4 @@
 from users import Users
-import os
-import json
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ def test_audio_conversion():
     expectedAudioOutput = str(project_root) + "/TestingFiles/ExpectedOutputText.txt"
     generatedAudioOutput = "generatedText.txt"
 
-    audioSource(source = "file", audioFilePath = audioFilePath, txtFileName="generatedText.txt")
+    audioSource(source="file", audioFilePath=audioFilePath, txtFileName="generatedText.txt")
 
     with open(generatedAudioOutput) as f:
         actual_text = f.read().strip()

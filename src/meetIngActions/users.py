@@ -1,6 +1,7 @@
 import os
 import requests
 
+
 class Users():
     def __init__(self):
         self.__loadSecrets()
@@ -16,7 +17,6 @@ class Users():
         accessToken = self.__login()
         self.auth = {'Authorization': 'Bearer ' + accessToken}
 
-
     def __loadSecrets(self):
         filepath = os.path.join('..', '..', 'secret.txt')
         if os.path.exists(filepath):
@@ -26,7 +26,6 @@ class Users():
                     if line and not line.startswith('#'):
                         key, value = line.split('=', 1)
                         os.environ[key] = value
-
 
     # Default method is GET
     def __makeRequest(self, url="", method='GET', data=None, isLogin=False):
@@ -53,7 +52,6 @@ class Users():
             print(f"Error: {e}")
         return None
 
-
     # logs user in and returns the jwt token
     def __login(self):
         url = self.api_address + "/api/v1/member/login/"
@@ -66,12 +64,10 @@ class Users():
             return response['token']['access']
         return False
 
-
     def getAvailableMeetings(self):
         url = self.api_address + "/api/v1/meeting-rooms/available/"
         response = self.__makeRequest(url)
         return response
-
 
     def bookMeeting(self, roomId: int, startTime, endTime, numPeople=2):
         url = self.api_address + f"/api/v1/meeting-rooms/{roomId}/book/"
@@ -88,12 +84,10 @@ class Users():
             print("Room Could Not Be Booked")
             return False
 
-
     def getBookings(self):
         url = self.api_address + "/api/v1/meeting-rooms/my-bookings/"
         response = self.__makeRequest(url)
         return response
-
 
     def deleteBooking(self, bookId: int):
         url = self.api_address + f"/api/v1/meeting-rooms/{bookId}/cancel-booking/"
@@ -105,7 +99,6 @@ class Users():
             print('No Booking With Id:', bookId)
             return False
 
-
     def printFormattedResponse(self, response):
         for firstObject in response:
             for key, value in firstObject.items():
@@ -116,4 +109,3 @@ class Users():
                 else:
                     print(f"{key}: {value}")
             print("-" * 50)
-
