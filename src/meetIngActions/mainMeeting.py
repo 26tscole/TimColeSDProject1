@@ -1,7 +1,7 @@
 from users import Users
 
 
-if __name__ == '__main__':
+def main():
     currentUser = Users()
     while True:
         action = input("Choose an Action By Number:\n"
@@ -46,3 +46,7 @@ if __name__ == '__main__':
                 break
             case _:
                 print("No Action Assigned to: ", action)
+
+
+if __name__ == '__main__':
+    main()

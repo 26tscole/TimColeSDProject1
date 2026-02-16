@@ -98,10 +98,10 @@ class Users():
             "end_time": endTime,
             "no_of_persons": numPeople,
         }
-        response = requests.post(url, json=params, headers=self.auth)
+        response = self.__makeRequest(url, method="POST", data=params)
         if response:
             bookId = (self.getBookingByStartTime(startTime))['id']
-            print("Successfully Booked Room: ", bookId)
+            print("Successfully Booked Room with Id: ", bookId)
             return bookId
         else:
             print("Room Could Not Be Booked")
@@ -113,7 +113,7 @@ class Users():
         response = self.__makeRequest(url)
         return response
 
-    # Allows you to delete bookings your account has made returns False if it doesnt work
+    # Allows you to delete bookings your account has made returns False if it doesn't work
     def deleteBooking(self, bookId: int):
         url = self.api_address + f"/api/v1/meeting-rooms/{bookId}/cancel-booking/"
         response = self.__makeRequest(url, method='DELETE')
@@ -142,6 +142,5 @@ class Users():
         for booking in self.getBookings():
             bookingTime = datetime.strptime(booking['start_time'].rstrip('Z'), "%Y-%m-%dT%H:%M:%S")
             if bookingTime == startTime:
-                print(booking)
                 return booking
         return False
