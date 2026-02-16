@@ -99,8 +99,8 @@ class Users():
             "no_of_persons": numPeople,
         }
         response = requests.post(url, json=params, headers=self.auth)
-        bookId = self.getBookingByStartTime(startTime)
         if response:
+            bookId = (self.getBookingByStartTime(startTime))['id']
             print("Successfully Booked Room: ", bookId)
             return bookId
         else:
@@ -136,10 +136,12 @@ class Users():
                     print(f"{key}: {value}")
             print("-" * 50)
 
-    # not currently being used but should work by checking date and returning the Id of the meeting
+    # this function searches for the id of the meeting with the inputted date
     def getBookingByStartTime(self, startTime):
+        startTime = datetime.strptime(startTime, "%Y-%m-%d %I:%M %p")
         for booking in self.getBookings():
-            startTime = datetime.strptime(startTime, "%Y-%m-%dT%H:%M:%S")
-            if booking['start_time'] == startTime:
+            bookingTime = datetime.strptime(booking['start_time'].rstrip('Z'), "%Y-%m-%dT%H:%M:%S")
+            if bookingTime == startTime:
+                print(booking)
                 return booking
         return False
