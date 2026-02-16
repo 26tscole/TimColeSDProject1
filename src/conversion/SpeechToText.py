@@ -13,7 +13,7 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
     # clears file if it already exists
     # ill probably give a prompt to the user if they want to clear or change the
     # filename but that's not important right now
-    with open(txtFileName, 'w') as f:
+    with open(txtFileName, "w") as f:
         f.write("")
     project_root = Path(__file__).parent.parent.parent
     audioFilePath = str(project_root/audioFilePath)
@@ -24,7 +24,13 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
     # checks the source so we can test the audio file as well
     if source == "microphone":
         mic = pa.PyAudio()
-        stream = mic.open(format=pa.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+        stream = mic.open(
+            format=pa.paInt16,
+            channels=1,
+            rate=16000,
+            input=True,
+            frames_per_buffer=8192,
+        )
         stream.start_stream()
         recognizer = KaldiRecognizer(model, 16000)
         while True:
@@ -35,7 +41,11 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
     # this is where the audio file should go through
     elif source == "file":
         with wave.open(audioFilePath, "rb") as wf:
-            if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+            if (
+                wf.getnchannels() != 1
+                or wf.getsampwidth() != 2
+                or wf.getcomptype() != "NONE"
+            ):
                 print("Audio file must be WAV format mono PCM.")
                 return
             recognizer = KaldiRecognizer(model, wf.getframerate())
