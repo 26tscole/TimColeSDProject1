@@ -1,5 +1,7 @@
 import os
 import requests
+from pathlib import Path
+from datetime import datetime
 
 
 class Users():
@@ -14,13 +16,23 @@ class Users():
         self.login_password = os.environ.get('LOGIN_PASSWORD')
         if not self.login_password:
             raise Exception('LOGIN_PASSWORD is not set')
-        accessToken = self.__login()
+        accessToken = self.login()
         self.auth = {'Authorization': 'Bearer ' + accessToken}
 
+    # Might be temporary but trouble with getting the secretFile Path
+    def __getSecretPath(self):
+        current = Path(__file__).resolve()
+        for parent in current.parents:
+            secretFile = parent / "secret.txt"
+            if secretFile.exists():
+                return secretFile
+        return None
+
+    # loads secrets from file for running on machine
     def __loadSecrets(self):
-        filepath = os.path.join('..', '..', 'secret.txt')
-        if os.path.exists(filepath):
-            with open(filepath, 'r') as f:
+        secretPath = self.__getSecretPath()
+        if os.path.exists(secretPath):
+            with open(secretPath, 'r') as f:
                 for line in f:
                     line = line.strip()
                     if line and not line.startswith('#'):
@@ -53,7 +65,7 @@ class Users():
         return None
 
     # logs user in and returns the jwt token
-    def __login(self):
+    def login(self):
         url = self.api_address + "/api/v1/member/login/"
         credentials = {
             "email": self.login_email,
@@ -64,11 +76,21 @@ class Users():
             return response['token']['access']
         return False
 
-    def getAvailableMeetings(self):
+    # Checks for available rooms can be used with startTime and endTime
+    def getAvailableMeetings(self, startTime=None, endTime=None):
         url = self.api_address + "/api/v1/meeting-rooms/available/"
-        response = self.__makeRequest(url)
-        return response
+        if startTime or endTime:
+            response = self.__makeRequest(url)
+            return response
+        else:
+            params = {
+                "start_time": startTime,
+                "end_time": endTime
+            }
+            response = self.__makeRequest(url, data=params)
+            return response
 
+    # books meeting will return the response or False if room isnt available
     def bookMeeting(self, roomId: int, startTime, endTime, numPeople=2):
         url = self.api_address + f"/api/v1/meeting-rooms/{roomId}/book/"
         params = {
@@ -77,18 +99,21 @@ class Users():
             "no_of_persons": numPeople,
         }
         response = requests.post(url, json=params, headers=self.auth)
+        bookId = self.getBookingByStartTime(startTime)
         if response:
-            print("Successfully Booked Room: ", response)
-            return response
+            print("Successfully Booked Room: ", bookId)
+            return bookId
         else:
             print("Room Could Not Be Booked")
             return False
 
+    # returns bookings your account has made
     def getBookings(self):
         url = self.api_address + "/api/v1/meeting-rooms/my-bookings/"
         response = self.__makeRequest(url)
         return response
 
+    # Allows you to delete bookings your account has made returns False if it doesnt work
     def deleteBooking(self, bookId: int):
         url = self.api_address + f"/api/v1/meeting-rooms/{bookId}/cancel-booking/"
         response = self.__makeRequest(url, method='DELETE')
@@ -99,6 +124,7 @@ class Users():
             print('No Booking With Id:', bookId)
             return False
 
+    # just using this to make the main look good
     def printFormattedResponse(self, response):
         for firstObject in response:
             for key, value in firstObject.items():
@@ -109,3 +135,11 @@ class Users():
                 else:
                     print(f"{key}: {value}")
             print("-" * 50)
+
+    # not currently being used but should work by checking date and returning the Id of the meeting
+    def getBookingByStartTime(self, startTime):
+        for booking in self.getBookings():
+            startTime = datetime.strptime(startTime, "%Y-%m-%dT%H:%M:%S")
+            if booking['start_time'] == startTime:
+                return booking
+        return False

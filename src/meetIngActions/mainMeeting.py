@@ -11,7 +11,7 @@ if __name__ == '__main__':
                        "4  --Delete a Booked Meeting--\n"
                        "\n"
                        "-----------------------------\n"
-                       "q  --End Program--\n"
+                       "q  --Quit Program--\n"
                        "-----------------------------\n")
         match action:
             case "1":
