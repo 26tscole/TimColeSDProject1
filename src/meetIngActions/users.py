@@ -31,7 +31,7 @@ class Users():
     # loads secrets from file for running on machine
     def __loadSecrets(self):
         secretPath = self.__getSecretPath()
-        if os.path.exists(secretPath):
+        if secretPath and os.path.exists(secretPath):
             with open(secretPath, 'r') as f:
                 for line in f:
                     line = line.strip()
