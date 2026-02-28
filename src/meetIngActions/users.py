@@ -78,6 +78,16 @@ class Users():
 
     # Checks for available rooms can be used with startTime and endTime
     def getAvailableMeetings(self, startTime=None, endTime=None):
+        """"
+        Args:
+            self: used to call upon class variables
+            startTime: String in format YYYY-MM-DD HH:MM used to find available meetings in between this and ending time
+            endTime: String in format YYYY-MM-DD HH:MM used to find available meetings in between this and starting time
+
+        Returns:
+            A JSON object that has information about all the fetched booked meetings
+
+        """
         url = self.api_address + "/api/v1/meeting-rooms/available/"
         if startTime or endTime:
             response = self.__makeRequest(url)
@@ -90,7 +100,7 @@ class Users():
             response = self.__makeRequest(url, data=params)
             return response
 
-    # books meeting will return the response or False if room isnt available
+    # books meeting will return the response or False if room isn't available
     def bookMeeting(self, roomId: int, startTime, endTime, numPeople=2):
         url = self.api_address + f"/api/v1/meeting-rooms/{roomId}/book/"
         params = {
@@ -109,6 +119,14 @@ class Users():
 
     # returns bookings your account has made
     def getBookings(self):
+        """"
+        Args:
+            self: used to call upon class variables
+
+        Returns:
+            A JSON object that has information about all the currently booked meetings
+
+        """
         url = self.api_address + "/api/v1/meeting-rooms/my-bookings/"
         response = self.__makeRequest(url)
         return response
