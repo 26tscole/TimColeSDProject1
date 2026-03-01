@@ -2,9 +2,21 @@
 ## Requirements 
 - Pyaudio  
 - vosk 0.3.44  
-- pytest 8.3.4  
+- pytest 8.3.4
+- langchain
+- langchain-google-genai
+- langchain-core
 
 You also need the vosk Model "vosk-model-small-en-us-0.15"
+
+## Secret.txt  
+You need to create a secret.txt file in the project root  
+This file needs to be formatted in this specific way
+
+API_ADDRESS=<>  
+LOGIN_EMAIL=<>  
+LOGIN_PASSWORD=<>  
+GEMINI_API_KEY=<>  
 
 ## Running the code for Sprint2
 To run the code for sprint2 you have to go to  
