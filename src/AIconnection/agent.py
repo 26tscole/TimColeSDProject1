@@ -18,17 +18,19 @@ def buildAIFunctionality():
 def sendAIrequest(llm, userInput):
 
     system_message = SystemMessage(
-        content="You are an ai agent that will search through api data and respond "
-                "to the user about open reservations and currently booked reservations."
-                "Use the least amount of tools as possible"
-                "Return your response in json format with two keys:\n"
-                "1. 'message': A brief explanation of what you found\n"
-                "2. 'data': The list of items from the tool result\n"
-                "Example: {'message': 'Found 3 bookings', 'data': [...]}"
-                "If no data found return"
-                "1. 'message': What you couldn't find\n"
-                "2. 'data': Empty list\n"
+        content="You are an AI agent that searches API data for reservations."
+                "PROCESS:"
+                "1. Call the appropriate tool ONCE to get data"
+                "2. You can call multiple tools if the user asks a question that requires more than one tool"
+                "2. IMMEDIATELY return a JSON response - DO NOT call tools again"
+                "RESPONSE FORMAT (required):"
+                "{message: Give the user a brief response that has to do with their question, data: [list of items]}"
+                "Examples:"
+                "- Found data: {message: Give the user a brief response that has to do with their question, data: [...]}"
+                "- No data: {message: Give the user a brief response that has to do with their question, data: []}"
+                "DO NOT call the same tool twice."
 )
+
     user_message = HumanMessage(content=userInput)
     messages = [system_message, user_message]
 
@@ -42,39 +44,59 @@ def sendAIrequest(llm, userInput):
     }
 
     # Wanted to make sure there isn't infinite calling of tools which would cause massive issues I believe
-    for _ in range(max_iterations):
+    for iteration in range(max_iterations):
         response = llmWithTools.invoke(messages)
 
+        print(f"\n=== Iteration {iteration + 1} ===")
+        print(f"Has tool calls: {bool(response.tool_calls)}")
+        print(f"Number of tool calls: {len(response.tool_calls) if response.tool_calls else 0}")
+
         if not response.tool_calls:
-            formattedResponse(response.content)
+            print("No tool calls - sending to formattedResponse")
+            formattedRooms(response.content)
             return
 
         messages.append(response)
 
         for tool_call in response.tool_calls:
+            print(f"Calling: {tool_call['name']} with args: {tool_call['args']}")
             result = tool_map[tool_call['name']].invoke(tool_call['args'])
+            print(f"Tool result: {result}")
             messages.append(HumanMessage(content=str(result), tool_call_id=tool_call['id']))
+
+    print("\n!!! Max iterations reached - LLM never stopped calling tools !!!")
 
     print("Max iterations reached.")
 
-def formattedResponse(response):
+def formattedRooms(response):
     try:
-        parsedResponse = json.loads(response[0]["text"])
+        print (response)
+        # We cannot have single quotes so this was my solution
+        if isinstance(response, list) and len(response) > 0:
+            response = response[0].get('text', '')
+            print(response)
+        response = response.replace("'", '"')
+        parsedResponse = json.loads(response)
         print("AI RESPONSE:\n")
         for key, value in parsedResponse.items():
             if key == "message":
-                print(
-                    "-"*len(value),"\n",
-                    value,"\n",
-                    "-" * len(value),"\n"
-                )
+                print("-" * len(value))
+                print(value)
+                print("-" * len(value))
+
             elif key == "data":
                 if not value:
-                    print("No data found")
                     return
-                for item in value:
-                    print(item)
+                for i, item in enumerate(value, 1):
+                    print(f"\nItem {i}:")
+                    for itemKey, itemValue in item.items():
+                        if isinstance(itemValue, dict):
+                            print(f"  {itemKey}:")
+                            for nestedKey, nestedValue in itemValue.items():
+                                print(f"    {nestedKey}: {nestedValue}")
+                        else:
+                            print(f"  {itemKey}: {itemValue}")
     except json.JSONDecodeError as e:
         print(f"Invalid JSON error: {e}")
         print(f"Content was: {response}")
-        return None
+        return
