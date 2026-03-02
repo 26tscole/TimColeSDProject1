@@ -20,4 +20,3 @@ def test_runAIChat():
     assert foundStartTime == '2040-01-01T10:00:00Z'
     assert foundEndTime == '2040-01-01T10:15:00Z'
     testUser.deleteBooking(bookId=bookId)
-
