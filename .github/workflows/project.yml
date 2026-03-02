@@ -11,6 +11,7 @@ jobs:
       API_ADDRESS: ${{ secrets.API_ADDRESS }}
       LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
       LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
     - uses: actions/checkout@v1
