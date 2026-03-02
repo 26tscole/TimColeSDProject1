@@ -16,7 +16,7 @@ def getCurrentDatetime() -> str:
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @tool
-def getAllAvailableMeetings(start_time: str = None, end_time: str = None) -> list:
+def getAvailableMeetings(start_time: str = None, end_time: str = None) -> list:
     """Get available meeting rooms. Optionally filter by start_time and end_time in format YYYY-MM-DD HH:MM"""
     if _users_instance is None:
         return ["Error: Users instance not initialized"]
