@@ -8,12 +8,13 @@ from src.meetIngActions.users import Users
 from src.conversion.SpeechToText import audioSource
 
 
-def runAIChat():
-    stillQuestioning = True
+# this function will return the specific data from the AI response
+def runAIChat(source="microphone", audioFilePath=""):
+    responses = []
     print("To send AI request say 'Send Message'")
     print("To end chat with AI say 'Stop Chat'")
-    while stillQuestioning:
-        audioSource(txtFileName="AIFile")
+    while True:
+        audioSource(txtFileName="AIFile", source=source, audioFilePath=audioFilePath)
         loadSecrets()
         user = Users()
         llm = buildAIFunctionality()
@@ -28,10 +29,11 @@ def runAIChat():
         if "reset" in content:
             print("Reset!")
             continue
+        responses.append(sendAIrequest(llm=llm, userInput=content))
+        if source == "file":
+            break
+    return responses
 
-        sendAIrequest(llm=llm, userInput=content)
-
-max_iterations = 5
 def buildAIFunctionality():
     tools = [getCurrentDatetime, getAvailableMeetings, getBookings]
     llm = ChatGoogleGenerativeAI(
@@ -71,6 +73,7 @@ def sendAIrequest(llm, userInput):
     }
 
     # Wanted to make sure there isn't infinite calling of tools which would cause massive issues I believe
+    max_iterations = 5
     for iteration in range(max_iterations):
         response = llmWithTools.invoke(messages)
 
@@ -80,8 +83,7 @@ def sendAIrequest(llm, userInput):
 
         if not response.tool_calls:
             print("No tool calls - sending to formattedResponse")
-            formattedRooms(response.content)
-            return
+            return formattedRooms(response.content)
 
         messages.append(response)
 
@@ -92,16 +94,14 @@ def sendAIrequest(llm, userInput):
             messages.append(HumanMessage(content=str(result), tool_call_id=tool_call['id']))
 
     print("\n!!! Max iterations reached - LLM never stopped calling tools !!!")
-
     print("Max iterations reached.")
+    return None
 
 def formattedRooms(response):
     try:
-        print (response)
         # We cannot have single quotes so this was my solution
         if isinstance(response, list) and len(response) > 0:
             response = response[0].get('text', '')
-            print(response)
         parsedResponse = json.loads(response)
         print("AI RESPONSE:\n")
         for key, value in parsedResponse.items():
@@ -112,7 +112,7 @@ def formattedRooms(response):
 
             elif key == "data":
                 if not value:
-                    return
+                    return None
                 for i, item in enumerate(value, 1):
                     print(f"\nItem {i}:")
                     for itemKey, itemValue in item.items():
@@ -122,7 +122,8 @@ def formattedRooms(response):
                                 print(f"    {nestedKey}: {nestedValue}")
                         else:
                             print(f"  {itemKey}: {itemValue}")
+        return parsedResponse
     except json.JSONDecodeError as e:
         print(f"Invalid JSON error: {e}")
         print(f"Content was: {response}")
-        return
+        return None
