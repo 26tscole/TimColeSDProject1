@@ -12,6 +12,7 @@ def test_runAIChat():
     endTime = "2040-01-01 10:15 AM"
     testUser = Users()
     bookId = testUser.bookMeeting(roomId=roomId, startTime=startTime, endTime=endTime)
+    print(bookId)
     audioFilePath = str(project_root) + "/TestingFiles/AIAudioTest.wav"
     response = runAIChat(source="file", audioFilePath=audioFilePath)
     assert response
