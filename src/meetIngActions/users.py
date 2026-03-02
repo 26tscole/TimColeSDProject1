@@ -1,12 +1,16 @@
 import os
 import requests
-from pathlib import Path
 from datetime import datetime
+from src.setEnviron import loadSecrets
 
 
 class Users():
     def __init__(self):
-        self.__loadSecrets()
+        """"
+        Initializes Users class which will allows for server connection and ability to call functions.
+
+        """
+        loadSecrets()
         self.api_address = os.environ.get('API_ADDRESS')
         if not self.api_address:
             raise Exception('API_ADDRESS is not set')
@@ -18,26 +22,6 @@ class Users():
             raise Exception('LOGIN_PASSWORD is not set')
         accessToken = self.login()
         self.auth = {'Authorization': 'Bearer ' + accessToken}
-
-    # Might be temporary but trouble with getting the secretFile Path
-    def __getSecretPath(self):
-        current = Path(__file__).resolve()
-        for parent in current.parents:
-            secretFile = parent / "secret.txt"
-            if secretFile.exists():
-                return secretFile
-        return None
-
-    # loads secrets from file for running on machine
-    def __loadSecrets(self):
-        secretPath = self.__getSecretPath()
-        if secretPath and os.path.exists(secretPath):
-            with open(secretPath, 'r') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        key, value = line.split('=', 1)
-                        os.environ[key] = value
 
     # Default method is GET
     def __makeRequest(self, url="", method='GET', data=None, isLogin=False):
@@ -78,6 +62,16 @@ class Users():
 
     # Checks for available rooms can be used with startTime and endTime
     def getAvailableMeetings(self, startTime=None, endTime=None):
+        """"
+
+        Args:
+            startTime: String in format YYYY-MM-DD HH:MM used to find available meetings in between this and ending time
+            endTime: String in format YYYY-MM-DD HH:MM used to find available meetings in between this and starting time
+
+        Returns:
+            A JSON object that has information about all the fetched booked meetings
+
+        """
         url = self.api_address + "/api/v1/meeting-rooms/available/"
         if startTime or endTime:
             response = self.__makeRequest(url)
@@ -90,7 +84,7 @@ class Users():
             response = self.__makeRequest(url, data=params)
             return response
 
-    # books meeting will return the response or False if room isnt available
+    # books meeting will return the response or False if room isn't available
     def bookMeeting(self, roomId: int, startTime, endTime, numPeople=2):
         url = self.api_address + f"/api/v1/meeting-rooms/{roomId}/book/"
         params = {
@@ -109,6 +103,12 @@ class Users():
 
     # returns bookings your account has made
     def getBookings(self):
+        """"
+
+        Returns:
+            A JSON object that has information about all the currently booked meetings
+
+        """
         url = self.api_address + "/api/v1/meeting-rooms/my-bookings/"
         response = self.__makeRequest(url)
         return response

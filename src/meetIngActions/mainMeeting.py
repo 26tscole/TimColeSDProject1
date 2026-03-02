@@ -1,4 +1,5 @@
 from users import Users
+from src.setEnviron import loadSecrets
 
 
 def main():
@@ -49,4 +50,5 @@ def main():
 
 
 if __name__ == '__main__':
+    loadSecrets()
     main()
