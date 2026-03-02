@@ -2,8 +2,34 @@ import os
 import json
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage
-from src.AIconnection.userTools import getCurrentDatetime, getAvailableMeetings, getBookings
+from src.AIconnection.userTools import getCurrentDatetime, getAvailableMeetings, getBookings, setUsersInstance
+from src.setEnviron import loadSecrets
+from src.meetIngActions.users import Users
+from src.conversion.SpeechToText import audioSource
 
+
+def runAIChat():
+    stillQuestioning = True
+    print("To send AI request say 'Send Message'")
+    print("To end chat with AI say 'Stop Chat'")
+    while stillQuestioning:
+        audioSource(txtFileName="AIFile")
+        loadSecrets()
+        user = Users()
+        llm = buildAIFunctionality()
+        setUsersInstance(user)
+        with open('AIFile', 'r') as f:
+            content = f.read()
+        content = content.lower()
+        content = content.replace("send message", "")
+        if "stop chat" in content:
+            print("GoodBye!")
+            break
+        if "reset" in content:
+            print("Reset!")
+            continue
+
+        sendAIrequest(llm=llm, userInput=content)
 
 max_iterations = 5
 def buildAIFunctionality():
@@ -22,13 +48,14 @@ def sendAIrequest(llm, userInput):
                 "PROCESS:"
                 "1. Call the appropriate tool ONCE to get data"
                 "2. You can call multiple tools if the user asks a question that requires more than one tool"
-                "2. IMMEDIATELY return a JSON response - DO NOT call tools again"
+                "2. IMMEDIATELY return a VALID JSON response. Use double quotes for ALL keys and values."
                 "RESPONSE FORMAT (required):"
-                "{message: Give the user a brief response that has to do with their question, data: [list of items]}"
+                "\"{message\": \"Give the user a brief response that has to do with their question\", \"data\": [list of items]}"
                 "Examples:"
-                "- Found data: {message: Give the user a brief response that has to do with their question, data: [...]}"
-                "- No data: {message: Give the user a brief response that has to do with their question, data: []}"
+                "- Found data: {\"message\": \"Give the user a brief response that has to do with their question\", \"data\": [...]}"
+                "- No data: {\"message\": \"Give the user a brief response that has to do with their question\", \"data\": []}"
                 "DO NOT call the same tool twice."
+                "DO NOT call a tool if the request doesn't need a tool to be answered"
 )
 
     user_message = HumanMessage(content=userInput)
@@ -75,7 +102,6 @@ def formattedRooms(response):
         if isinstance(response, list) and len(response) > 0:
             response = response[0].get('text', '')
             print(response)
-        response = response.replace("'", '"')
         parsedResponse = json.loads(response)
         print("AI RESPONSE:\n")
         for key, value in parsedResponse.items():

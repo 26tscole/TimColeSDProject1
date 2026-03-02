@@ -71,7 +71,8 @@ def audioConversion(txtFileName, data, recognizer):
         print(result["text"])
         if result:
             outputToFile(txtFileName=txtFileName, audioText=result["text"])
-            if result["text"] == "stop recording":
+
+            if result["text"] in ["send message", "stop chat", "reset"]:
                 return True
     return False
 
