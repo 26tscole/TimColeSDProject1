@@ -1,11 +1,14 @@
 from nicegui import ui
-from layout import roomTable
+from layout import roomTable, deleteRoom, addRoom, changeCapacity
 from src.meetIngActions.users import Users
 
 @ui.page('/')
 def page():
     ui.page_title('Room Bookings')
     roomTable()
+    deleteRoom()
+    addRoom()
+    changeCapacity()
 
 ui.run()
 
