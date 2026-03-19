@@ -8,7 +8,7 @@ project_root = Path(__file__).parent
 
 @pytest.fixture
 def test_user_booking():
-    roomId = 11
+    roomId = 1
     startTime = "2040-01-01 10:00 AM"
     endTime = "2040-01-01 10:15 AM"
     testUser = Users()
