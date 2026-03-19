@@ -1,3 +1,4 @@
+from pathlib import Path
 from nicegui import ui
 from src.editDB.dbFunctions import (
     getAllRooms,
@@ -5,6 +6,8 @@ from src.editDB.dbFunctions import (
     deleteRoom as dbDelete,
     updateCapacity as dbUpdate,
 )
+
+DBPath = str(Path(__file__).resolve().parent.parent.parent.parent / "db.sqlite3")
 
 
 def checkValidity(items: list[str]):
@@ -46,7 +49,7 @@ def deleteRoom():
         def onSubmit() -> None:
             submitInp = [toDelete.value]
             if checkValidity(submitInp):
-                dbDelete(toDelete.value)
+                dbDelete(toDelete.value, DBPath)
                 roomTable.refresh()
 
         ui.button("Submit", on_click=lambda: onSubmit())
@@ -61,7 +64,7 @@ def addRoom():
         def onSubmit() -> None:
             submitInp = [roomName.value, capacity.value]
             if checkValidity(submitInp):
-                dbAdd(roomName.value, capacity.value)
+                dbAdd(roomName.value, capacity.value, DBPath)
                 roomTable.refresh()
 
         ui.button("Submit", on_click=lambda: onSubmit())
@@ -77,7 +80,7 @@ def changeCapacity():
             submitInp = [roomId.value, capacity.value]
             checkValidity(submitInp)
             if checkValidity(submitInp):
-                dbUpdate(roomId.value, capacity.value)
+                dbUpdate(roomId.value, capacity.value, DBPath)
                 roomTable.refresh()
 
         ui.button("Submit", on_click=lambda: onSubmit())

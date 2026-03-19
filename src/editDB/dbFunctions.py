@@ -2,14 +2,14 @@ import sqlite3
 from pathlib import Path
 import csv
 
-DBPath = Path(__file__).resolve().parent.parent.parent / "db.sqlite3"
+DBPath = str(Path(__file__).resolve().parent.parent.parent / "db.sqlite3")
 
 
 def DBConnection(path: str | None = None):
     return sqlite3.connect(path)
 
 
-def getAllRooms(path):
+def getAllRooms(path=DBPath):
     with DBConnection(path) as conn:
         query = (
             "SELECT id, room_name, capacity FROM booking_meetingroom WHERE is_active"
