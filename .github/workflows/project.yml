@@ -44,6 +44,14 @@ jobs:
       run: |
         pip install pytest
         python -m pytest
+    - name: Copy files to server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: server/*
+        target: /opt/Room_booking_serve
     - name: Deploy to Digital Ocean
       if: success()
       uses: appleboy/ssh-action@master

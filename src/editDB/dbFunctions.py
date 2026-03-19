@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 import csv
 
-DBPath = str(Path(__file__).resolve().parent.parent.parent / "db.sqlite3")
+DBPath = str(Path(__file__).resolve().parent.parent.parent / "server" / "db.sqlite3")
 
 
 def DBConnection(path: str | None = None):
