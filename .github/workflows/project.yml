@@ -52,7 +52,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /otp/Room_booking_serve
+          cd /opt/Room_booking_serve
           source venv/bin/activate
           git pull
           pip install -r requirements.txt
