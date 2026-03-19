@@ -4,15 +4,17 @@ from users import Users
 def main():
     currentUser = Users()
     while True:
-        action = input("Choose an Action By Number:\n"
-                       "1  --Check Available Meetings--\n"
-                       "2  --Book a Meeting Room--\n"
-                       "3  --Check Your Current Bookings--\n"
-                       "4  --Delete a Booked Meeting--\n"
-                       "\n"
-                       "-----------------------------\n"
-                       "q  --Quit Program--\n"
-                       "-----------------------------\n")
+        action = input(
+            "Choose an Action By Number:\n"
+            "1  --Check Available Meetings--\n"
+            "2  --Book a Meeting Room--\n"
+            "3  --Check Your Current Bookings--\n"
+            "4  --Delete a Booked Meeting--\n"
+            "\n"
+            "-----------------------------\n"
+            "q  --Quit Program--\n"
+            "-----------------------------\n"
+        )
         match action:
             case "1":
                 response = currentUser.getAvailableMeetings()
@@ -25,7 +27,9 @@ def main():
                     print("Fill Out Needed Info To Book a Room: ")
                     print("(Make sure meeting is no longer than 15 Minutes)")
                     roomId = int(input("Pick Room Id from list: "))
-                    startTime = input("Choose start time in (yyyy-mm-dd hh:mm AM) format: ")
+                    startTime = input(
+                        "Choose start time in (yyyy-mm-dd hh:mm AM) format: "
+                    )
                     endTime = input("Choose end time in (yyyy-mm-dd hh:mm AM) format: ")
                     canBook = currentUser.bookMeeting(roomId, startTime, endTime)
 
@@ -48,5 +52,5 @@ def main():
                 print("No Action Assigned to: ", action)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

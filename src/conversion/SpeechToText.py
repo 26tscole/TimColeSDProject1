@@ -16,8 +16,8 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
     with open(txtFileName, "w") as f:
         f.write("")
     project_root = Path(__file__).parent.parent.parent
-    audioFilePath = str(project_root/audioFilePath)
-    newModelPath = str(project_root/modelPath)
+    audioFilePath = str(project_root / audioFilePath)
+    newModelPath = str(project_root / modelPath)
     model = Model(newModelPath)
     recognizer = None
 
@@ -35,7 +35,9 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
         recognizer = KaldiRecognizer(model, 16000)
         while True:
             data = stream.read(4000)
-            if audioConversion(txtFileName=txtFileName, data=data, recognizer=recognizer):
+            if audioConversion(
+                txtFileName=txtFileName, data=data, recognizer=recognizer
+            ):
                 break
 
     # this is where the audio file should go through
@@ -51,7 +53,9 @@ def audioSource(audioFilePath="", source="microphone", txtFileName="DefaultText.
             recognizer = KaldiRecognizer(model, wf.getframerate())
             while True:
                 data = wf.readframes(4000)
-                if audioConversion(txtFileName=txtFileName, data=data, recognizer=recognizer):
+                if audioConversion(
+                    txtFileName=txtFileName, data=data, recognizer=recognizer
+                ):
                     break
 
     # the last result works very strange so I had to add this to actually output it
@@ -72,7 +76,12 @@ def audioConversion(txtFileName, data, recognizer):
         if result:
             outputToFile(txtFileName=txtFileName, audioText=result["text"])
 
-            if result["text"] in ["stop recording", "send message", "stop chat", "reset"]:
+            if result["text"] in [
+                "stop recording",
+                "send message",
+                "stop chat",
+                "reset",
+            ]:
                 return True
     return False
 

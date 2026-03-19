@@ -1,7 +1,6 @@
 from pathlib import Path
 from src.editDB.dbFunctions import getRoomId, addRoom, deleteRoom, updateCapacity
 
-
 project_root = Path(__file__).parent
 
 
@@ -14,5 +13,4 @@ def test_all_room_functions():
     assert roomId
     newCapacity = getRoomId(roomName, capacity)
     assert updateCapacity(roomId, newCapacity) != 0
-    assert deleteRoom(roomId)!= 0
-
+    assert deleteRoom(roomId) != 0

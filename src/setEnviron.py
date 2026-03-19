@@ -16,9 +16,9 @@ def getSecretPath():
 def loadSecrets():
     secretPath = getSecretPath()
     if secretPath and os.path.exists(secretPath):
-        with open(secretPath, 'r') as f:
+        with open(secretPath, "r") as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#'):
-                    key, value = line.split('=', 1)
+                if line and not line.startswith("#"):
+                    key, value = line.split("=", 1)
                     os.environ[key] = value

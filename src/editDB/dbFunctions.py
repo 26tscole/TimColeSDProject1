@@ -2,14 +2,19 @@ import sqlite3
 from pathlib import Path
 import csv
 
+
 def DBConnection():
     DBPath = Path(__file__).resolve().parent.parent.parent / "db.sqlite3"
     return sqlite3.connect(DBPath)
 
+
 def getAllRooms():
     with DBConnection() as conn:
-        query = "SELECT id, room_name, capacity FROM booking_meetingroom WHERE is_active"
+        query = (
+            "SELECT id, room_name, capacity FROM booking_meetingroom WHERE is_active"
+        )
         return conn.execute(query).fetchall()
+
 
 def getRoomId(roomName, capacity):
     rooms = getAllRooms()
@@ -17,6 +22,7 @@ def getRoomId(roomName, capacity):
         if room[1] == roomName and room[2] == capacity:
             return room[0]
     return None
+
 
 def saveDeletedReservations(reservations, roomId):
     if not reservations:
@@ -27,11 +33,20 @@ def saveDeletedReservations(reservations, roomId):
 
     with file_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["Start_Time", "End_Time", "no_of_persons", "booked_by_id", "meeting_room_id"])
+        writer.writerow(
+            [
+                "Start_Time",
+                "End_Time",
+                "no_of_persons",
+                "booked_by_id",
+                "meeting_room_id",
+            ]
+        )
         writer.writerows(reservations)
         f.flush()
 
     print(f"Saved: {file_path}")
+
 
 def addRoom(roomName, Capacity):
     with DBConnection() as conn:
@@ -41,21 +56,25 @@ def addRoom(roomName, Capacity):
         conn.commit()
         return cur.rowcount
 
+
 def deleteRoom(roomId):
     reservations = []
     row = 0
     with DBConnection() as conn:
         cur = conn.cursor()
-        bookedRoomsQuery="SELECT start_time, end_time, no_of_persons, booked_by_id, meeting_room_id FROM booking_bookinghistory WHERE meeting_room_id=?"
+        bookedRoomsQuery = "SELECT start_time, end_time, no_of_persons, booked_by_id, meeting_room_id FROM booking_bookinghistory WHERE meeting_room_id=?"
         reservations = conn.execute(bookedRoomsQuery, (roomId,)).fetchall()
-        deleteBookedRooms = "DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?"
+        deleteBookedRooms = (
+            "DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?"
+        )
         cur.execute(deleteBookedRooms, (roomId,))
-        deleteRoomQuery="DELETE FROM booking_meetingroom WHERE id = ?"
+        deleteRoomQuery = "DELETE FROM booking_meetingroom WHERE id = ?"
         cur.execute(deleteRoomQuery, (roomId,))
         conn.commit()
         row = cur.rowcount
     saveDeletedReservations(reservations, roomId)
     return row
+
 
 def updateCapacity(roomId, capacity):
     with DBConnection() as conn:
@@ -64,4 +83,3 @@ def updateCapacity(roomId, capacity):
         cur.execute(query, (capacity, roomId))
         conn.commit()
         return cur.rowcount
-

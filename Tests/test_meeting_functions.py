@@ -1,7 +1,6 @@
 from pathlib import Path
 from src.meetIngActions.users import Users
 
-
 project_root = Path(__file__).parent
 
 
