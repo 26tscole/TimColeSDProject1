@@ -2,22 +2,22 @@ import sqlite3
 from pathlib import Path
 import csv
 
+DBPath = Path(__file__).resolve().parent.parent.parent / "db.sqlite3"
 
-def DBConnection():
-    DBPath = Path(__file__).resolve().parent.parent.parent / "db.sqlite3"
-    return sqlite3.connect(DBPath)
+def DBConnection(path: str | None = None):
+    return sqlite3.connect(path)
 
 
-def getAllRooms():
-    with DBConnection() as conn:
+def getAllRooms(path):
+    with DBConnection(path) as conn:
         query = (
             "SELECT id, room_name, capacity FROM booking_meetingroom WHERE is_active"
         )
         return conn.execute(query).fetchall()
 
 
-def getRoomId(roomName, capacity):
-    rooms = getAllRooms()
+def getRoomId(roomName, capacity, path):
+    rooms = getAllRooms(path)
     for room in rooms:
         if room[1] == roomName and room[2] == capacity:
             return room[0]
@@ -48,8 +48,8 @@ def saveDeletedReservations(reservations, roomId):
     print(f"Saved: {file_path}")
 
 
-def addRoom(roomName, Capacity):
-    with DBConnection() as conn:
+def addRoom(roomName, Capacity, path):
+    with DBConnection(path) as conn:
         cur = conn.cursor()
         query = "INSERT INTO booking_meetingroom (room_name, capacity, is_active) VALUES (?, ?, 1)"
         cur.execute(query, (roomName, Capacity))
@@ -57,10 +57,10 @@ def addRoom(roomName, Capacity):
         return cur.rowcount
 
 
-def deleteRoom(roomId):
+def deleteRoom(roomId, path):
     reservations = []
     row = 0
-    with DBConnection() as conn:
+    with DBConnection(path) as conn:
         cur = conn.cursor()
         bookedRoomsQuery = (
             "SELECT start_time, end_time, no_of_persons, booked_by_id, meeting_room_id "
@@ -80,8 +80,8 @@ def deleteRoom(roomId):
     return row
 
 
-def updateCapacity(roomId, capacity):
-    with DBConnection() as conn:
+def updateCapacity(roomId, capacity, path):
+    with DBConnection(path) as conn:
         cur = conn.cursor()
         query = "UPDATE booking_meetingroom SET capacity = ? WHERE id = ?"
         cur.execute(query, (capacity, roomId))
