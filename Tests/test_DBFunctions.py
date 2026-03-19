@@ -1,5 +1,11 @@
 from pathlib import Path
-from src.editDB.dbFunctions import getRoomId, addRoom, deleteRoom, updateCapacity, getAllRooms
+from src.editDB.dbFunctions import (
+    getRoomId,
+    addRoom,
+    deleteRoom,
+    updateCapacity,
+    getAllRooms,
+)
 
 project_root = Path(__file__).parent
 
