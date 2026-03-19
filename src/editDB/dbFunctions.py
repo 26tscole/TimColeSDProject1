@@ -62,7 +62,11 @@ def deleteRoom(roomId):
     row = 0
     with DBConnection() as conn:
         cur = conn.cursor()
-        bookedRoomsQuery = "SELECT start_time, end_time, no_of_persons, booked_by_id, meeting_room_id FROM booking_bookinghistory WHERE meeting_room_id=?"
+        bookedRoomsQuery = (
+            "SELECT start_time, end_time, no_of_persons, booked_by_id, meeting_room_id "
+            "FROM booking_bookinghistory "
+            "WHERE meeting_room_id = ?"
+        )
         reservations = conn.execute(bookedRoomsQuery, (roomId,)).fetchall()
         deleteBookedRooms = (
             "DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?"
