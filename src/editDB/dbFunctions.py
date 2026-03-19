@@ -10,7 +10,6 @@ def getAllRooms():
         query = "SELECT id, room_name, capacity FROM booking_meetingroom WHERE is_active"
         return conn.execute(query).fetchall()
 
-
 def addRoom(roomName, Capacity):
     with DBConnection() as conn:
         cur = conn.cursor()

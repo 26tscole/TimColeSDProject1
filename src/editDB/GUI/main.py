@@ -5,10 +5,11 @@ from src.meetIngActions.users import Users
 @ui.page('/')
 def page():
     ui.page_title('Room Bookings')
-    roomTable()
-    deleteRoom()
-    addRoom()
-    changeCapacity()
+    with ui.row().classes('w-full items-start gap-4'):
+        roomTable()
+        deleteRoom()
+        addRoom()
+        changeCapacity()
 
 ui.run()
 
