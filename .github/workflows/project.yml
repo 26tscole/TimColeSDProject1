@@ -50,8 +50,9 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: server/*
+        source: server/db.sqlite3
         target: /opt/Room_booking_serve
+        strip_components: 1
     - name: Deploy to Digital Ocean
       if: success()
       uses: appleboy/ssh-action@master
