@@ -9,6 +9,7 @@
 - langchain
 - langchain-google-genai
 - langchain-core
+- nicegui
 
 You also need the vosk Model "vosk-model-small-en-us-0.15"
 
@@ -20,6 +21,36 @@ API_ADDRESS=<api_address>
 LOGIN_EMAIL=<login_email>  
 LOGIN_PASSWORD=<login_password>  
 GEMINI_API_KEY=<gemini_api_key>  
+
+---
+___
+
+## Running the code for Sprint4
+To run the sprint4 code you have to go to  
+>src/editDB/GUI/main.py  
+
+run the if __name__ = "__main__"
+
+### Instructions
+
+- After running the code you will be directed to a localHost webpage
+- Here you will have the options to
+  - Delete a Room
+    - For deleting a room you need to insert the roomId you want to delete
+    - After deleting a room if that room has any reservations a csv file will be created with all deleted rooms
+  - Add a room
+    - For Adding a room you need to give a room name and capacity for that room
+  - Change a rooms Capacity
+    - To change the rooms Capacity you have to enter the roomId and new Capacity
+- For all of these functions the submit button will allow you to save the changes
+
+### Things to Note
+
+- The secrets.txt file needs to be setup in the exact way explained above
+- My server droplet is -> Tcole-ubuntu-s-1vcpu-512mb-10gb-nyc3-01
+- On this droplet I changed the way the delete works using Claude Code
+- I used the same email and password in my server that was given to me on blackboard
+- Last thing to note, there is no easy way to stop this code from running other than forcing it stop using the IDE
 
 ---
 ___

@@ -10,7 +10,9 @@ def test_audio_conversion():
     expectedAudioOutput = str(project_root) + "/TestingFiles/ExpectedOutputText.txt"
     generatedAudioOutput = "generatedText.txt"
 
-    audioSource(source="file", audioFilePath=audioFilePath, txtFileName="generatedText.txt")
+    audioSource(
+        source="file", audioFilePath=audioFilePath, txtFileName="generatedText.txt"
+    )
 
     with open(generatedAudioOutput) as f:
         actual_text = f.read().strip()
@@ -18,4 +20,6 @@ def test_audio_conversion():
     with open(expectedAudioOutput) as f:
         expected_text = f.read().strip()
 
-    assert actual_text == expected_text, f"Mismatch:\nExpected: {expected_text}\nActual: {actual_text}"
+    assert (
+        actual_text == expected_text
+    ), f"Mismatch:\nExpected: {expected_text}\nActual: {actual_text}"

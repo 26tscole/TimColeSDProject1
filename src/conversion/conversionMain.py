@@ -8,5 +8,5 @@ if __name__ == "__main__":
     if chosenName == "":
         audioSource()
     else:
-        fileName = (chosenName.replace(" ", "_")+".txt")
+        fileName = chosenName.replace(" ", "_") + ".txt"
         audioSource(txtFileName=fileName)

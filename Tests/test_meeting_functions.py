@@ -1,7 +1,6 @@
 from pathlib import Path
 from src.meetIngActions.users import Users
 
-
 project_root = Path(__file__).parent
 
 
@@ -23,7 +22,7 @@ def test_available_rooms():
 
 # tests if meetings can be created not copied over and then they are subsequently deleted
 def test_create_meeting():
-    roomId = 11
+    roomId = 1
     startTime = "4819-01-01 10:00 AM"
     endTime = "4819-01-01 10:15 AM"
     testUser = Users()
