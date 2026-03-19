@@ -4,6 +4,7 @@ import csv
 
 DBPath = Path(__file__).resolve().parent.parent.parent / "db.sqlite3"
 
+
 def DBConnection(path: str | None = None):
     return sqlite3.connect(path)
 
