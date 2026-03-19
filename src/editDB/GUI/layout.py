@@ -7,7 +7,9 @@ from src.editDB.dbFunctions import (
     updateCapacity as dbUpdate,
 )
 
-DBPath = str(Path(__file__).resolve().parent.parent.parent.parent /"server" / "db.sqlite3")
+DBPath = str(
+    Path(__file__).resolve().parent.parent.parent.parent / "server" / "db.sqlite3"
+)
 
 
 def checkValidity(items: list[str]):
