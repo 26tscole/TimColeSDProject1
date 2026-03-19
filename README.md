@@ -50,6 +50,7 @@ run the if __name__ = "__main__"
 - My server droplet is -> Tcole-ubuntu-s-1vcpu-512mb-10gb-nyc3-01
 - On this droplet I changed the way the delete works using Claude Code
 - I used the same email and password in my server that was given to me on blackboard
+- My database should be sending over to my Server updating everything that is changed on the local database 
 - Last thing to note, there is no easy way to stop this code from running other than forcing it stop using the IDE
 
 ---
